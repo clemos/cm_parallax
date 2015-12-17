@@ -1,21 +1,67 @@
 (function (console) { "use strict";
 var Main = function() {
-	UserMedia.get({ video : true},$bind(this,this.onUserMedia),$bind(this,this.onUserMediaError));
+	var _g = this;
+	this.views = { video : (function($this) {
+		var $r;
+		var _this = window.document;
+		$r = _this.createElement("video");
+		return $r;
+	}(this)), sources : (function($this) {
+		var $r;
+		var _this1 = window.document;
+		$r = _this1.createElement("select");
+		return $r;
+	}(this))};
+	this.views.video.autoplay = true;
+	window.document.body.appendChild(this.views.video);
+	window.document.body.appendChild(this.views.sources);
+	UserMedia.getSources(function(sources) {
+		_g.onSources(sources);
+		_g.selectUserMedia(_g.videoSources[0]);
+	});
 };
 Main.__name__ = true;
 Main.main = function() {
 	new Main();
 };
 Main.prototype = {
-	onUserMedia: function(stream) {
-		haxe_Log.trace("got stream",{ fileName : "Main.hx", lineNumber : 11, className : "Main", methodName : "onUserMedia", customParams : [stream]});
-		var video;
-		var _this = window.document;
-		video = _this.createElement("video");
+	onSources: function(sources) {
+		var _g2 = this;
+		this.views.sources.innerHTML = "";
+		this.videoSources = sources.filter(function(s) {
+			return s.kind == "video";
+		});
+		var _g = 0;
+		var _g1 = this.videoSources;
+		while(_g < _g1.length) {
+			var s1 = [_g1[_g]];
+			++_g;
+			var o;
+			var _this = window.document;
+			o = _this.createElement("option");
+			o.innerHTML = s1[0].label;
+			o.value = s1[0].id;
+			o.selected = s1[0].enabled;
+			o.onselect = (function(s1) {
+				return function(e) {
+					e.preventDefault();
+					_g2.selectUserMedia(s1[0]);
+				};
+			})(s1);
+			this.views.sources.appendChild(o);
+		}
+	}
+	,selectUserMedia: function(source) {
+		this.selectedSource = source;
+		var opt = { video : true, optional : [{ sourceId : source.id}]};
+		UserMedia.get(opt,$bind(this,this.onUserMedia),$bind(this,this.onUserMediaError));
+	}
+	,onUserMedia: function(stream) {
+		haxe_Log.trace("got stream",{ fileName : "Main.hx", lineNumber : 71, className : "Main", methodName : "onUserMedia", customParams : [stream]});
 		var streamURL = window.URL.createObjectURL(stream);
-		haxe_Log.trace("stream url",{ fileName : "Main.hx", lineNumber : 14, className : "Main", methodName : "onUserMedia", customParams : [streamURL]});
-		video.src = streamURL;
-		window.document.body.appendChild(video);
+		haxe_Log.trace("stream url",{ fileName : "Main.hx", lineNumber : 73, className : "Main", methodName : "onUserMedia", customParams : [streamURL]});
+		this.views.video.src = streamURL;
+		this.onSources(this.videoSources);
 	}
 	,onUserMediaError: function(e) {
 		window.alert("Fuck");
@@ -27,6 +73,9 @@ UserMedia.__name__ = true;
 UserMedia.get = function(request,onSuccess,onError) {
 	window.navigator.getUserMedia(request,onSuccess,onError);
 	return;
+};
+UserMedia.getSources = function(cb) {
+	MediaStreamTrack.getSources(cb);
 };
 var haxe_Log = function() { };
 haxe_Log.__name__ = true;
@@ -125,6 +174,17 @@ var $_, $fid = 0;
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $fid++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = function(){ return f.method.apply(f.scope, arguments); }; f.scope = o; f.method = m; o.hx__closures__[m.__id__] = f; } return f; }
 String.__name__ = true;
 Array.__name__ = true;
+if(Array.prototype.filter == null) Array.prototype.filter = function(f1) {
+	var a1 = [];
+	var _g11 = 0;
+	var _g2 = this.length;
+	while(_g11 < _g2) {
+		var i1 = _g11++;
+		var e = this[i1];
+		if(f1(e)) a1.push(e);
+	}
+	return a1;
+};
 window.navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
 Main.main();
 })(typeof console != "undefined" ? console : {log:function(){}});
