@@ -1,6 +1,7 @@
 import js.Browser.*;
 import js.html.DivElement;
 import js.html.MediaStreamTrack;
+import js.html.OptionElement;
 import js.html.SelectElement;
 import js.html.VideoElement;
 
@@ -15,6 +16,7 @@ class Main {
     };
 
     var videoSources:Array<MediaStreamTrack>;
+    var selectedSource : String;
 
     function new(){
         views = {
@@ -52,17 +54,32 @@ class Main {
             return s.kind == 'video';
         });
 
+        var o = document.createOptionElement();
+        o.innerHTML = "sources";
+        o.disabled = true;
+        views.sources.appendChild( o );
+
         for( s in videoSources ) {
             var o = document.createOptionElement();
             o.innerHTML = s.label;
             o.value = s.id;
-            o.selected = s.enabled;
-            o.onselect = function(e:js.html.Event){
-                e.preventDefault();
-                selectUserMedia(o.value);
-            };
+            o.selected = selectedSource == s.id;
+            
             views.sources.appendChild( o );
         }
+
+        views.sources.onchange = function(e:js.html.Event){
+            
+            for( o in views.sources.getElementsByTagName('option') ) {
+
+                if( cast(o,OptionElement).value != null && cast(o,OptionElement).selected ) {
+                    selectUserMedia(cast(o,OptionElement).value);
+                    return;
+                }
+            }
+            
+            e.preventDefault();
+        };
 
         
     }
@@ -77,6 +94,8 @@ class Main {
             ]
         };
 
+        selectedSource = id;
+
         UserMedia.get(opt, onUserMedia , onUserMediaError );
     }
     function onUserMedia(stream){
@@ -85,6 +104,7 @@ class Main {
         var streamURL = untyped __js__('window.URL').createObjectURL(stream);
         trace("stream url",streamURL);
         views.video.src = streamURL;
+        views.video.play();
 
         onSources(videoSources);
         

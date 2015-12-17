@@ -1,4 +1,10 @@
-(function (console) { "use strict";
+(function (console, $global) { "use strict";
+function $extend(from, fields) {
+	function Inherit() {} Inherit.prototype = from; var proto = new Inherit();
+	for (var name in fields) proto[name] = fields[name];
+	if( fields.toString !== Object.prototype.toString ) proto.toString = fields.toString;
+	return proto;
+}
 var Main = function() {
 	var _g = this;
 	this.views = { stage : (function($this) {
@@ -39,50 +45,68 @@ Main.main = function() {
 };
 Main.prototype = {
 	onSources: function(sources) {
-		var _g2 = this;
+		var _g = this;
 		this.views.sources.innerHTML = "";
 		this.videoSources = sources.filter(function(s) {
 			return s.kind == "video";
 		});
-		var _g = 0;
-		var _g1 = this.videoSources;
-		while(_g < _g1.length) {
-			var s1 = _g1[_g];
-			++_g;
-			var o = [(function($this) {
-				var $r;
-				var _this = window.document;
-				$r = _this.createElement("option");
-				return $r;
-			}(this))];
-			o[0].innerHTML = s1.label;
-			o[0].value = s1.id;
-			o[0].selected = s1.enabled;
-			o[0].onselect = (function(o) {
-				return function(e) {
-					e.preventDefault();
-					_g2.selectUserMedia(o[0].value);
-				};
-			})(o);
-			this.views.sources.appendChild(o[0]);
+		var o;
+		var _this = window.document;
+		o = _this.createElement("option");
+		o.innerHTML = "sources";
+		o.disabled = true;
+		this.views.sources.appendChild(o);
+		var _g1 = 0;
+		var _g11 = this.videoSources;
+		while(_g1 < _g11.length) {
+			var s1 = _g11[_g1];
+			++_g1;
+			var o1;
+			var _this1 = window.document;
+			o1 = _this1.createElement("option");
+			o1.innerHTML = s1.label;
+			o1.value = s1.id;
+			o1.selected = this.selectedSource == s1.id;
+			this.views.sources.appendChild(o1);
 		}
+		this.views.sources.onchange = function(e) {
+			var _g12 = 0;
+			var _g2 = _g.views.sources.getElementsByTagName("option");
+			while(_g12 < _g2.length) {
+				var o2 = _g2[_g12];
+				++_g12;
+				if((js_Boot.__cast(o2 , HTMLOptionElement)).value != null && (js_Boot.__cast(o2 , HTMLOptionElement)).selected) {
+					_g.selectUserMedia((js_Boot.__cast(o2 , HTMLOptionElement)).value);
+					return;
+				}
+			}
+			e.preventDefault();
+		};
 	}
 	,selectUserMedia: function(id) {
 		var opt = { video : true, optional : [{ sourceId : id}]};
+		this.selectedSource = id;
 		UserMedia.get(opt,$bind(this,this.onUserMedia),$bind(this,this.onUserMediaError));
 	}
 	,onUserMedia: function(stream) {
-		haxe_Log.trace("got stream",{ fileName : "Main.hx", lineNumber : 84, className : "Main", methodName : "onUserMedia", customParams : [stream]});
+		haxe_Log.trace("got stream",{ fileName : "Main.hx", lineNumber : 103, className : "Main", methodName : "onUserMedia", customParams : [stream]});
 		var streamURL = window.URL.createObjectURL(stream);
-		haxe_Log.trace("stream url",{ fileName : "Main.hx", lineNumber : 86, className : "Main", methodName : "onUserMedia", customParams : [streamURL]});
+		haxe_Log.trace("stream url",{ fileName : "Main.hx", lineNumber : 105, className : "Main", methodName : "onUserMedia", customParams : [streamURL]});
 		this.views.video.src = streamURL;
+		this.views.video.play();
 		this.onSources(this.videoSources);
 	}
 	,onUserMediaError: function(e) {
 		window.alert("Fuck");
 	}
+	,__class__: Main
 };
 Math.__name__ = true;
+var Std = function() { };
+Std.__name__ = true;
+Std.string = function(s) {
+	return js_Boot.__string_rec(s,"");
+};
 var UserMedia = function() { };
 UserMedia.__name__ = true;
 UserMedia.get = function(request,onSuccess,onError) {
@@ -97,6 +121,17 @@ haxe_Log.__name__ = true;
 haxe_Log.trace = function(v,infos) {
 	js_Boot.__trace(v,infos);
 };
+var js__$Boot_HaxeError = function(val) {
+	Error.call(this);
+	this.val = val;
+	this.message = String(val);
+	if(Error.captureStackTrace) Error.captureStackTrace(this,js__$Boot_HaxeError);
+};
+js__$Boot_HaxeError.__name__ = true;
+js__$Boot_HaxeError.__super__ = Error;
+js__$Boot_HaxeError.prototype = $extend(Error.prototype,{
+	__class__: js__$Boot_HaxeError
+});
 var js_Boot = function() { };
 js_Boot.__name__ = true;
 js_Boot.__unhtml = function(s) {
@@ -117,6 +152,15 @@ js_Boot.__trace = function(v,i) {
 	}
 	var d;
 	if(typeof(document) != "undefined" && (d = document.getElementById("haxe:trace")) != null) d.innerHTML += js_Boot.__unhtml(msg) + "<br/>"; else if(typeof console != "undefined" && console.log != null) console.log(msg);
+};
+js_Boot.getClass = function(o) {
+	if((o instanceof Array) && o.__enum__ == null) return Array; else {
+		var cl = o.__class__;
+		if(cl != null) return cl;
+		var name = js_Boot.__nativeClassName(o);
+		if(name != null) return js_Boot.__resolveNativeClass(name);
+		return null;
+	}
 };
 js_Boot.__string_rec = function(o,s) {
 	if(o == null) return "null";
@@ -154,6 +198,7 @@ js_Boot.__string_rec = function(o,s) {
 		try {
 			tostr = o.toString;
 		} catch( e ) {
+			if (e instanceof js__$Boot_HaxeError) e = e.val;
 			return "???";
 		}
 		if(tostr != null && tostr != Object.toString && typeof(tostr) == "function") {
@@ -185,10 +230,77 @@ js_Boot.__string_rec = function(o,s) {
 		return String(o);
 	}
 };
+js_Boot.__interfLoop = function(cc,cl) {
+	if(cc == null) return false;
+	if(cc == cl) return true;
+	var intf = cc.__interfaces__;
+	if(intf != null) {
+		var _g1 = 0;
+		var _g = intf.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			var i1 = intf[i];
+			if(i1 == cl || js_Boot.__interfLoop(i1,cl)) return true;
+		}
+	}
+	return js_Boot.__interfLoop(cc.__super__,cl);
+};
+js_Boot.__instanceof = function(o,cl) {
+	if(cl == null) return false;
+	switch(cl) {
+	case Int:
+		return (o|0) === o;
+	case Float:
+		return typeof(o) == "number";
+	case Bool:
+		return typeof(o) == "boolean";
+	case String:
+		return typeof(o) == "string";
+	case Array:
+		return (o instanceof Array) && o.__enum__ == null;
+	case Dynamic:
+		return true;
+	default:
+		if(o != null) {
+			if(typeof(cl) == "function") {
+				if(o instanceof cl) return true;
+				if(js_Boot.__interfLoop(js_Boot.getClass(o),cl)) return true;
+			} else if(typeof(cl) == "object" && js_Boot.__isNativeObj(cl)) {
+				if(o instanceof cl) return true;
+			}
+		} else return false;
+		if(cl == Class && o.__name__ != null) return true;
+		if(cl == Enum && o.__ename__ != null) return true;
+		return o.__enum__ == cl;
+	}
+};
+js_Boot.__cast = function(o,t) {
+	if(js_Boot.__instanceof(o,t)) return o; else throw new js__$Boot_HaxeError("Cannot cast " + Std.string(o) + " to " + Std.string(t));
+};
+js_Boot.__nativeClassName = function(o) {
+	var name = js_Boot.__toStr.call(o).slice(8,-1);
+	if(name == "Object" || name == "Function" || name == "Math" || name == "JSON") return null;
+	return name;
+};
+js_Boot.__isNativeObj = function(o) {
+	return js_Boot.__nativeClassName(o) != null;
+};
+js_Boot.__resolveNativeClass = function(name) {
+	return $global[name];
+};
 var $_, $fid = 0;
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $fid++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = function(){ return f.method.apply(f.scope, arguments); }; f.scope = o; f.method = m; o.hx__closures__[m.__id__] = f; } return f; }
+String.prototype.__class__ = String;
 String.__name__ = true;
 Array.__name__ = true;
+var Int = { __name__ : ["Int"]};
+var Dynamic = { __name__ : ["Dynamic"]};
+var Float = Number;
+Float.__name__ = ["Float"];
+var Bool = Boolean;
+Bool.__ename__ = ["Bool"];
+var Class = { __name__ : ["Class"]};
+var Enum = { };
 if(Array.prototype.filter == null) Array.prototype.filter = function(f1) {
 	var a1 = [];
 	var _g11 = 0;
@@ -201,5 +313,6 @@ if(Array.prototype.filter == null) Array.prototype.filter = function(f1) {
 	return a1;
 };
 window.navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
+js_Boot.__toStr = {}.toString;
 Main.main();
-})(typeof console != "undefined" ? console : {log:function(){}});
+})(typeof console != "undefined" ? console : {log:function(){}}, typeof window != "undefined" ? window : typeof global != "undefined" ? global : typeof self != "undefined" ? self : this);
