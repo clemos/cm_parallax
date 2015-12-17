@@ -89,14 +89,15 @@ class Main {
     function selectUserMedia(id:String){
         var opt = {
             video: {
-                optional:[{
+                optional:([{
                     sourceId:id,
-                    aspectRatio: '16:9'
-                }],
+                },{
+                    aspectRatio: window.screen.availWidth / window.screen.availHeight
+                }]:Array<Dynamic>),
                 mandatory:{
                     minWidth: window.screen.availWidth / 2,
                     minHeight: window.screen.availHeight / 2,
-                    //window.screen.availWidth / window.screen.availHeight
+                    //
                 }
             }
         };
