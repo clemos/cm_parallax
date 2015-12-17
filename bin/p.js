@@ -83,16 +83,16 @@ Main.prototype = {
 		};
 	}
 	,selectUserMedia: function(id) {
-		var opt = { video : { optional : [{ sourceId : id}], mandatory : { minWidth : window.screen.availWidth / 2, minHeight : window.screen.availHeight / 2}}};
+		var opt = { video : { optional : [{ sourceId : id}], mandatory : { minWidth : window.screen.availWidth / 2, minHeight : window.screen.availHeight / 2, aspectRatio : window.screen.availWidth / window.screen.availHeight}}};
 		if(this.currentStream != null) this.currentStream.stop();
 		this.views.video.src = null;
 		this.selectedSource = id;
 		UserMedia.get(opt,$bind(this,this.onUserMedia),$bind(this,this.onUserMediaError));
 	}
 	,onUserMedia: function(stream) {
-		haxe_Log.trace("got stream",{ fileName : "Main.hx", lineNumber : 116, className : "Main", methodName : "onUserMedia", customParams : [stream]});
+		haxe_Log.trace("got stream",{ fileName : "Main.hx", lineNumber : 117, className : "Main", methodName : "onUserMedia", customParams : [stream]});
 		var streamURL = window.URL.createObjectURL(stream);
-		haxe_Log.trace("stream url",{ fileName : "Main.hx", lineNumber : 118, className : "Main", methodName : "onUserMedia", customParams : [streamURL]});
+		haxe_Log.trace("stream url",{ fileName : "Main.hx", lineNumber : 119, className : "Main", methodName : "onUserMedia", customParams : [streamURL]});
 		this.views.video.src = streamURL;
 		this.views.video.play();
 		this.onSources(this.videoSources);

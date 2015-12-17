@@ -95,6 +95,7 @@ class Main {
                 mandatory:{
                     minWidth: window.screen.availWidth / 2,
                     minHeight: window.screen.availHeight / 2,
+                    aspectRatio: window.screen.availWidth / window.screen.availHeight
                 }
             }
         };
