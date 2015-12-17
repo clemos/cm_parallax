@@ -83,7 +83,7 @@ Main.prototype = {
 		};
 	}
 	,selectUserMedia: function(id) {
-		var opt = { video : { optional : [{ sourceId : id}], mandatory : { minWidth : window.screen.availWidth / 2, minHeight : window.screen.availHeight / 2, aspectRatio : window.screen.availWidth / window.screen.availHeight}}};
+		var opt = { video : { optional : [{ sourceId : id}], mandatory : { minWidth : window.screen.availWidth / 2, minHeight : window.screen.availHeight / 2, aspectRatio : "16:9"}}};
 		if(this.currentStream != null) this.currentStream.stop();
 		this.views.video.src = null;
 		this.selectedSource = id;
