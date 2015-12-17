@@ -83,16 +83,16 @@ Main.prototype = {
 		};
 	}
 	,selectUserMedia: function(id) {
-		var opt = { video : { optional : [{ sourceId : id}], mandatory : { minWidth : window.screen.availWidth / 2, minHeight : window.screen.availHeight / 2, aspectRatio : "16:9"}}};
+		var opt = { video : { optional : [{ sourceId : id, aspectRatio : "16:9"}], mandatory : { minWidth : window.screen.availWidth / 2, minHeight : window.screen.availHeight / 2}}};
 		if(this.currentStream != null) this.currentStream.stop();
 		this.views.video.src = null;
 		this.selectedSource = id;
 		UserMedia.get(opt,$bind(this,this.onUserMedia),$bind(this,this.onUserMediaError));
 	}
 	,onUserMedia: function(stream) {
-		haxe_Log.trace("got stream",{ fileName : "Main.hx", lineNumber : 117, className : "Main", methodName : "onUserMedia", customParams : [stream]});
+		haxe_Log.trace("got stream",{ fileName : "Main.hx", lineNumber : 118, className : "Main", methodName : "onUserMedia", customParams : [stream]});
 		var streamURL = window.URL.createObjectURL(stream);
-		haxe_Log.trace("stream url",{ fileName : "Main.hx", lineNumber : 119, className : "Main", methodName : "onUserMedia", customParams : [streamURL]});
+		haxe_Log.trace("stream url",{ fileName : "Main.hx", lineNumber : 120, className : "Main", methodName : "onUserMedia", customParams : [streamURL]});
 		this.views.video.src = streamURL;
 		this.views.video.play();
 		this.onSources(this.videoSources);
@@ -302,17 +302,6 @@ var Bool = Boolean;
 Bool.__ename__ = ["Bool"];
 var Class = { __name__ : ["Class"]};
 var Enum = { };
-if(Array.prototype.filter == null) Array.prototype.filter = function(f1) {
-	var a1 = [];
-	var _g11 = 0;
-	var _g2 = this.length;
-	while(_g11 < _g2) {
-		var i1 = _g11++;
-		var e = this[i1];
-		if(f1(e)) a1.push(e);
-	}
-	return a1;
-};
 window.navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
 js_Boot.__toStr = {}.toString;
 Main.main();

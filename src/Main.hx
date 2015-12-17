@@ -90,12 +90,13 @@ class Main {
         var opt = {
             video: {
                 optional:[{
-                    sourceId:id
+                    sourceId:id,
+                    aspectRatio: '16:9'
                 }],
                 mandatory:{
                     minWidth: window.screen.availWidth / 2,
                     minHeight: window.screen.availHeight / 2,
-                    aspectRatio: '16:9'//window.screen.availWidth / window.screen.availHeight
+                    //window.screen.availWidth / window.screen.availHeight
                 }
             }
         };
