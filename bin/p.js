@@ -75,7 +75,6 @@ Main.prototype = {
 				var o2 = _g2[_g12];
 				++_g12;
 				if((js_Boot.__cast(o2 , HTMLOptionElement)).value != null && (js_Boot.__cast(o2 , HTMLOptionElement)).selected) {
-					window.alert((js_Boot.__cast(o2 , HTMLOptionElement)).value);
 					_g.selectUserMedia((js_Boot.__cast(o2 , HTMLOptionElement)).value);
 					return;
 				}
@@ -303,17 +302,6 @@ var Bool = Boolean;
 Bool.__ename__ = ["Bool"];
 var Class = { __name__ : ["Class"]};
 var Enum = { };
-if(Array.prototype.filter == null) Array.prototype.filter = function(f1) {
-	var a1 = [];
-	var _g11 = 0;
-	var _g2 = this.length;
-	while(_g11 < _g2) {
-		var i1 = _g11++;
-		var e = this[i1];
-		if(f1(e)) a1.push(e);
-	}
-	return a1;
-};
 window.navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
 js_Boot.__toStr = {}.toString;
 Main.main();

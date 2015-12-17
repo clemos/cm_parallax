@@ -75,7 +75,7 @@ class Main {
             for( o in views.sources.getElementsByTagName('option') ) {
 
                 if( cast(o,OptionElement).value != null && cast(o,OptionElement).selected ) {
-                    window.alert(cast(o,OptionElement).value);
+                    //window.alert(cast(o,OptionElement).value);
                     selectUserMedia(cast(o,OptionElement).value);
                     return;
                 }
