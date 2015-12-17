@@ -20,6 +20,7 @@ var Main = function() {
 	var _stage = this.views.stage;
 	this.views.stage.requestFullscreen = _stage.requestFullscreen || _stage.webkitRequestFullScreen || _stage.mozRequestFullScreen;
 	this.views.stage.className = "stage";
+	this.views.sources.className = "sources";
 	window.document.body.onclick = function() {
 		_g.views.stage.requestFullscreen();
 	};
@@ -69,9 +70,9 @@ Main.prototype = {
 		UserMedia.get(opt,$bind(this,this.onUserMedia),$bind(this,this.onUserMediaError));
 	}
 	,onUserMedia: function(stream) {
-		haxe_Log.trace("got stream",{ fileName : "Main.hx", lineNumber : 85, className : "Main", methodName : "onUserMedia", customParams : [stream]});
+		haxe_Log.trace("got stream",{ fileName : "Main.hx", lineNumber : 86, className : "Main", methodName : "onUserMedia", customParams : [stream]});
 		var streamURL = window.URL.createObjectURL(stream);
-		haxe_Log.trace("stream url",{ fileName : "Main.hx", lineNumber : 87, className : "Main", methodName : "onUserMedia", customParams : [streamURL]});
+		haxe_Log.trace("stream url",{ fileName : "Main.hx", lineNumber : 88, className : "Main", methodName : "onUserMedia", customParams : [streamURL]});
 		this.views.video.src = streamURL;
 		this.onSources(this.videoSources);
 	}

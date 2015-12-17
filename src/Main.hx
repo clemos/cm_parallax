@@ -28,6 +28,7 @@ class Main {
         untyped views.stage["requestFullscreen"] = __js__('_stage.requestFullscreen || _stage.webkitRequestFullScreen || _stage.mozRequestFullScreen');
             
         views.stage.className = "stage";
+        views.sources.className = "sources";
 
         document.body.onclick = function(){
             views.stage.requestFullscreen();
