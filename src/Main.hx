@@ -1,5 +1,6 @@
 import js.Browser.*;
 import js.html.DivElement;
+import js.html.MediaStream;
 import js.html.MediaStreamTrack;
 import js.html.OptionElement;
 import js.html.SelectElement;
@@ -17,6 +18,7 @@ class Main {
 
     var videoSources:Array<MediaStreamTrack>;
     var selectedSource : String;
+    var currentStream : Dynamic;
 
     function new(){
         views = {
@@ -87,15 +89,26 @@ class Main {
 
     function selectUserMedia(id:String){
         var opt = {
-            video:true,
-            sourceId:id
+            video: {
+                optional:[{
+                    sourceId:id
+                }]
+            }
         };
+
+        if( currentStream != null ) {
+            currentStream.stop();
+        }
+
+        views.video.src = null;
 
         selectedSource = id;
 
         UserMedia.get(opt, onUserMedia , onUserMediaError );
     }
     function onUserMedia(stream){
+
+
 
         trace("got stream",stream);
         var streamURL = untyped __js__('window.URL').createObjectURL(stream);
