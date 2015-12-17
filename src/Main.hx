@@ -1,4 +1,5 @@
 import js.Browser.*;
+import js.html.DivElement;
 import js.html.MediaStreamTrack;
 import js.html.SelectElement;
 import js.html.VideoElement;
@@ -9,7 +10,8 @@ class Main {
 
     var views : {
         sources : SelectElement,
-        video : VideoElement
+        video : VideoElement,
+        stage : DivElement
     };
 
     var videoSources:Array<MediaStreamTrack>;
@@ -17,13 +19,25 @@ class Main {
 
     function new(){
         views = {
+            stage : document.createDivElement(),
             video : document.createVideoElement(),
             sources : document.createSelectElement()
         };
-        views.video.autoplay = true;
-        document.body.appendChild(views.video);
 
-        document.body.appendChild(views.sources);
+        var _stage = views.stage;
+        untyped views.stage["requestFullscreen"] = __js__('_stage.requestFullscreen || _stage.webkitRequestFullScreen || _stage.mozRequestFullScreen');
+            
+        views.stage.className = "stage";
+
+        document.body.onclick = function(){
+            views.stage.requestFullscreen();
+        }
+
+        views.video.autoplay = true;
+
+        views.stage.appendChild(views.video);
+        views.stage.appendChild(views.sources);
+        document.body.appendChild(views.stage);
 
         UserMedia.getSources(function(sources){
             onSources(sources);

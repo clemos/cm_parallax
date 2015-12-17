@@ -1,20 +1,32 @@
 (function (console) { "use strict";
 var Main = function() {
 	var _g = this;
-	this.views = { video : (function($this) {
+	this.views = { stage : (function($this) {
 		var $r;
 		var _this = window.document;
-		$r = _this.createElement("video");
+		$r = _this.createElement("div");
+		return $r;
+	}(this)), video : (function($this) {
+		var $r;
+		var _this1 = window.document;
+		$r = _this1.createElement("video");
 		return $r;
 	}(this)), sources : (function($this) {
 		var $r;
-		var _this1 = window.document;
-		$r = _this1.createElement("select");
+		var _this2 = window.document;
+		$r = _this2.createElement("select");
 		return $r;
 	}(this))};
+	var _stage = this.views.stage;
+	this.views.stage.requestFullscreen = _stage.requestFullscreen || _stage.webkitRequestFullScreen || _stage.mozRequestFullScreen;
+	this.views.stage.className = "stage";
+	window.document.body.onclick = function() {
+		_g.views.stage.requestFullscreen();
+	};
 	this.views.video.autoplay = true;
-	window.document.body.appendChild(this.views.video);
-	window.document.body.appendChild(this.views.sources);
+	this.views.stage.appendChild(this.views.video);
+	this.views.stage.appendChild(this.views.sources);
+	window.document.body.appendChild(this.views.stage);
 	UserMedia.getSources(function(sources) {
 		_g.onSources(sources);
 		_g.selectUserMedia(_g.videoSources[0]);
@@ -57,9 +69,9 @@ Main.prototype = {
 		UserMedia.get(opt,$bind(this,this.onUserMedia),$bind(this,this.onUserMediaError));
 	}
 	,onUserMedia: function(stream) {
-		haxe_Log.trace("got stream",{ fileName : "Main.hx", lineNumber : 71, className : "Main", methodName : "onUserMedia", customParams : [stream]});
+		haxe_Log.trace("got stream",{ fileName : "Main.hx", lineNumber : 85, className : "Main", methodName : "onUserMedia", customParams : [stream]});
 		var streamURL = window.URL.createObjectURL(stream);
-		haxe_Log.trace("stream url",{ fileName : "Main.hx", lineNumber : 73, className : "Main", methodName : "onUserMedia", customParams : [streamURL]});
+		haxe_Log.trace("stream url",{ fileName : "Main.hx", lineNumber : 87, className : "Main", methodName : "onUserMedia", customParams : [streamURL]});
 		this.views.video.src = streamURL;
 		this.onSources(this.videoSources);
 	}
