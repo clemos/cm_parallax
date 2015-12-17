@@ -75,7 +75,6 @@ class Main {
             for( o in views.sources.getElementsByTagName('option') ) {
 
                 if( cast(o,OptionElement).value != null && cast(o,OptionElement).selected ) {
-                    //window.alert(cast(o,OptionElement).value);
                     selectUserMedia(cast(o,OptionElement).value);
                     return;
                 }
@@ -92,7 +91,11 @@ class Main {
             video: {
                 optional:[{
                     sourceId:id
-                }]
+                }],
+                mandatory:{
+                    minWidth: window.screen.availWidth / 2,
+                    minHeight: window.screen.availHeight / 2,
+                }
             }
         };
 
