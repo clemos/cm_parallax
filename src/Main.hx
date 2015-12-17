@@ -15,7 +15,6 @@ class Main {
     };
 
     var videoSources:Array<MediaStreamTrack>;
-    var selectedSource:MediaStreamTrack;
 
     function new(){
         views = {
@@ -42,7 +41,7 @@ class Main {
 
         UserMedia.getSources(function(sources){
             onSources(sources);
-            selectUserMedia(videoSources[0]);
+            selectUserMedia(videoSources[0].id);
         });
     }
 
@@ -60,7 +59,7 @@ class Main {
             o.selected = s.enabled;
             o.onselect = function(e:js.html.Event){
                 e.preventDefault();
-                selectUserMedia(s);
+                selectUserMedia(o.value);
             };
             views.sources.appendChild( o );
         }
@@ -68,13 +67,12 @@ class Main {
         
     }
 
-    function selectUserMedia(source:MediaStreamTrack){
-        selectedSource = source;
+    function selectUserMedia(id:String){
         var opt = {
             video:true,
             optional:[
                 {
-                    sourceId:source.id
+                    sourceId:id
                 }
             ]
         };

@@ -30,7 +30,7 @@ var Main = function() {
 	window.document.body.appendChild(this.views.stage);
 	UserMedia.getSources(function(sources) {
 		_g.onSources(sources);
-		_g.selectUserMedia(_g.videoSources[0]);
+		_g.selectUserMedia(_g.videoSources[0].id);
 	});
 };
 Main.__name__ = true;
@@ -47,32 +47,34 @@ Main.prototype = {
 		var _g = 0;
 		var _g1 = this.videoSources;
 		while(_g < _g1.length) {
-			var s1 = [_g1[_g]];
+			var s1 = _g1[_g];
 			++_g;
-			var o;
-			var _this = window.document;
-			o = _this.createElement("option");
-			o.innerHTML = s1[0].label;
-			o.value = s1[0].id;
-			o.selected = s1[0].enabled;
-			o.onselect = (function(s1) {
+			var o = [(function($this) {
+				var $r;
+				var _this = window.document;
+				$r = _this.createElement("option");
+				return $r;
+			}(this))];
+			o[0].innerHTML = s1.label;
+			o[0].value = s1.id;
+			o[0].selected = s1.enabled;
+			o[0].onselect = (function(o) {
 				return function(e) {
 					e.preventDefault();
-					_g2.selectUserMedia(s1[0]);
+					_g2.selectUserMedia(o[0].value);
 				};
-			})(s1);
-			this.views.sources.appendChild(o);
+			})(o);
+			this.views.sources.appendChild(o[0]);
 		}
 	}
-	,selectUserMedia: function(source) {
-		this.selectedSource = source;
-		var opt = { video : true, optional : [{ sourceId : source.id}]};
+	,selectUserMedia: function(id) {
+		var opt = { video : true, optional : [{ sourceId : id}]};
 		UserMedia.get(opt,$bind(this,this.onUserMedia),$bind(this,this.onUserMediaError));
 	}
 	,onUserMedia: function(stream) {
-		haxe_Log.trace("got stream",{ fileName : "Main.hx", lineNumber : 86, className : "Main", methodName : "onUserMedia", customParams : [stream]});
+		haxe_Log.trace("got stream",{ fileName : "Main.hx", lineNumber : 84, className : "Main", methodName : "onUserMedia", customParams : [stream]});
 		var streamURL = window.URL.createObjectURL(stream);
-		haxe_Log.trace("stream url",{ fileName : "Main.hx", lineNumber : 88, className : "Main", methodName : "onUserMedia", customParams : [streamURL]});
+		haxe_Log.trace("stream url",{ fileName : "Main.hx", lineNumber : 86, className : "Main", methodName : "onUserMedia", customParams : [streamURL]});
 		this.views.video.src = streamURL;
 		this.onSources(this.videoSources);
 	}
