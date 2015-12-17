@@ -56,7 +56,7 @@ class Main {
 
         var o = document.createOptionElement();
         o.innerHTML = "sources";
-        o.disabled = true;
+        //o.disabled = true;
         views.sources.appendChild( o );
 
         for( s in videoSources ) {
@@ -73,7 +73,7 @@ class Main {
             for( o in views.sources.getElementsByTagName('option') ) {
 
                 if( cast(o,OptionElement).value != null && cast(o,OptionElement).selected ) {
-                    alert(cast(o,OptionElement).value);
+                    window.alert(cast(o,OptionElement).value);
                     selectUserMedia(cast(o,OptionElement).value);
                     return;
                 }
@@ -88,11 +88,7 @@ class Main {
     function selectUserMedia(id:String){
         var opt = {
             video:true,
-            optional:[
-                {
-                    sourceId:id
-                }
-            ]
+            sourceId:id
         };
 
         selectedSource = id;
