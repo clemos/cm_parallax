@@ -76,6 +76,7 @@ Main.prototype = {
 				var o2 = _g2[_g12];
 				++_g12;
 				if((js_Boot.__cast(o2 , HTMLOptionElement)).value != null && (js_Boot.__cast(o2 , HTMLOptionElement)).selected) {
+					js_Browser.alert((js_Boot.__cast(o2 , HTMLOptionElement)).value);
 					_g.selectUserMedia((js_Boot.__cast(o2 , HTMLOptionElement)).value);
 					return;
 				}
@@ -89,9 +90,9 @@ Main.prototype = {
 		UserMedia.get(opt,$bind(this,this.onUserMedia),$bind(this,this.onUserMediaError));
 	}
 	,onUserMedia: function(stream) {
-		haxe_Log.trace("got stream",{ fileName : "Main.hx", lineNumber : 103, className : "Main", methodName : "onUserMedia", customParams : [stream]});
+		haxe_Log.trace("got stream",{ fileName : "Main.hx", lineNumber : 104, className : "Main", methodName : "onUserMedia", customParams : [stream]});
 		var streamURL = window.URL.createObjectURL(stream);
-		haxe_Log.trace("stream url",{ fileName : "Main.hx", lineNumber : 105, className : "Main", methodName : "onUserMedia", customParams : [streamURL]});
+		haxe_Log.trace("stream url",{ fileName : "Main.hx", lineNumber : 106, className : "Main", methodName : "onUserMedia", customParams : [streamURL]});
 		this.views.video.src = streamURL;
 		this.views.video.play();
 		this.onSources(this.videoSources);
@@ -288,6 +289,11 @@ js_Boot.__isNativeObj = function(o) {
 js_Boot.__resolveNativeClass = function(name) {
 	return $global[name];
 };
+var js_Browser = function() { };
+js_Browser.__name__ = true;
+js_Browser.alert = function(v) {
+	window.alert(js_Boot.__string_rec(v,""));
+};
 var $_, $fid = 0;
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $fid++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = function(){ return f.method.apply(f.scope, arguments); }; f.scope = o; f.method = m; o.hx__closures__[m.__id__] = f; } return f; }
 String.prototype.__class__ = String;
@@ -301,17 +307,6 @@ var Bool = Boolean;
 Bool.__ename__ = ["Bool"];
 var Class = { __name__ : ["Class"]};
 var Enum = { };
-if(Array.prototype.filter == null) Array.prototype.filter = function(f1) {
-	var a1 = [];
-	var _g11 = 0;
-	var _g2 = this.length;
-	while(_g11 < _g2) {
-		var i1 = _g11++;
-		var e = this[i1];
-		if(f1(e)) a1.push(e);
-	}
-	return a1;
-};
 window.navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
 js_Boot.__toStr = {}.toString;
 Main.main();
